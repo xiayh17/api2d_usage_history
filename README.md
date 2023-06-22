@@ -1,6 +1,11 @@
 # api2d_usage_history
  check the usage history of custom key
 
+ 一键部署
+
+ [![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/git?s=https://github.com/xiayh17/api2d_usage_history&env=Token)
+
+
 在 Vercel 的项目设置中，找到 "环境变量" 部分并添加一个新的环境变量，
 名称为 Token，值为你的API Token
 
