@@ -2,7 +2,7 @@ from flask import Flask, request, render_template
 import requests
 import json
 import os
-Token = os.getenv('API_KEY')
+Token = os.getenv('Token')
 
 app = Flask(__name__)
 
