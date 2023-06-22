@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            padding: 20px;
+            background: #F9F9F9;
+        }
+        h2 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+        }
+        label, input[type="text"] {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background: #007AFF;
+            color: #fff;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background: #0051cb;
+        }
+    </style>
+</head>
+<body>
+
+<h2>API Key Form</h2>
+
+<form action="/get_balance_and_history" method="post">
+  <label for="apikey">API Key:</label><br>
+  <input type="text" id="apikey" name="apikey" value=""><br>
+  <input type="submit" value="Submit">
+</form> 
+
+</body>
+</html>

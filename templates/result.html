@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            padding: 20px;
+            background: #F9F9F9;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .key-value {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            padding: 10px;
+            background: #fff;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+        }
+        .key {
+            font-weight: 700;
+        }
+        .value {
+            font-weight: 400;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: left;
+            padding: 8px;
+        }
+        tr:nth-child(even){background-color: #f2f2f2}
+        .increase {
+            color: green;
+        }
+        .decrease {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Dashboard</h1>
+
+    <h2>Custom Key Data</h2>
+    {% for key, value in custom_key_json.items() %}
+        <div class="key-value">
+            <span class="key">{{ key }}</span>
+            <span class="value">{{ value }}</span>
+        </div>
+    {% endfor %}
+
+    <h2>Score Usage History</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Change Time</th>
+                <th>Score Before Change</th>
+                <th>Score After Change</th>
+                <th>Change</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for usage in point_usage_arrays %}
+            <tr>
+                <td>{{ usage.changed_at }}</td>
+                <td>{{ usage.before_point }}</td>
+                <td>{{ usage.after_point }}</td>
+                <td>
+                    {% if usage.after_point > usage.before_point %}
+                        <span class="increase">&#x2191;</span> <!-- Up arrow for increase -->
+                    {% elif usage.after_point < usage.before_point %}
+                        <span class="decrease">&#x2193;</span> <!-- Down arrow for decrease -->
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
