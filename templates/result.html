@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Result</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
+        .container {
+            max-width: 1200px; /* 或您喜欢的任何其他宽度 */
+            margin: 0 auto;   /* 将内容居中 */
+            padding: 0 20px;  /* 添加一些内边距，以确保内容不会紧挨屏幕边缘 */
+        }
         body {
             font-family: 'Roboto', Arial, sans-serif;
             padding: 20px;
@@ -45,45 +56,275 @@
         .decrease {
             color: red;
         }
+        .btn-gold {
+            background-color: #f9e6a5; /* 金色背景 */
+            color: #91721f; /* 文字颜色 */
+            cursor: pointer; /* 鼠标悬停时显示手形 */
+            transition: transform 0.5s; /* 点击时的动画效果 */
+        }
+        .btn-gold:hover {
+            transform: scale(1.05); /* 鼠标悬停时放大按钮 */
+            color: #fffb00; /* 鼠标悬停时颜色 */
+        }
+        .btn-gold:active {
+            transform: scale(1); /* 点击时恢复按钮大小 */
+        }
+        .button-container {
+            display: flex;
+            justify-content: center; /* 水平居中对齐 */
+            gap: 20px; /* 按钮之间的间距 */
+            margin: 20px 0; /* 上下外边距 */
+        }
+        .dataTables_wrapper .dataTables_paginate {
+            display: flex;
+            justify-content: center;
+        }
+        
+        .dataTables_wrapper .dataTables_length,
+        .dataTables_wrapper .dataTables_filter {
+            display: flex;
+            justify-content: center;
+            padding: 10px 0;
+        }
+        
+        .dataTables_wrapper .dataTables_length label,
+        .dataTables_wrapper .dataTables_filter label {
+            flex: 1;
+            text-align: center;
+        }
+        #data-table {
+            width: 100%;
+        }
+        /* DataTables 分页按钮的样式 */
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            padding: 6px 12px;
+            margin-left: 0;
+            font-size: 1rem;
+            border: 0.1rem solid #9b4dca;
+            border-radius: .2rem;
+            transition: background-color 0.3s;
+            background-color: #ffffff;
+            color: #9b4dca;
+            cursor: pointer;
+        }
+        
+        /* 当鼠标悬停在按钮上时的样式 */
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #9b4dca;
+            color: #ffffff;
+        }
+        
+        /* 当前页的按钮样式 */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #9b4dca;
+            color: #ffffff;
+        }
+        
+        /* 当按钮处于不活跃状态（例如第一页时的“上一页”按钮）时的样式 */
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            background-color: #f5f5f5;
+            color: #9b4dca;
+            cursor: not-allowed;
+        }
+        .copy-btn {
+            height: 28px;           /* 调整按钮的高度 */
+            margin: 0;
+            padding: 0 15px;  /* 左右边距保留，您可以根据需要调整 */
+            line-height: 1;
+        }
     </style>
 </head>
 <body>
-    <h1>User Dashboard</h1>
-
-    <h2>Custom Key Data</h2>
-    {% for key, value in custom_key_json.items() %}
-        <div class="key-value">
-            <span class="key">{{ key }}</span>
-            <span class="value">{{ value }}</span>
+    <div class="container"> <!-- 添加这个 div 元素 -->
+        <div class="button-container">
+            <div style="margin: 20px 0;">
+                <button data-href="{{ recharge_link }}" class="btn-gold" onclick="openNewTab(this)">自助充值</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <button onclick="location.href='/refresh'">Refresh Data</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <button onclick="location.href='https://www.basedynamics.top/'">Chat</button>
+            </div>
         </div>
-    {% endfor %}
+                      
+        <!-- 在适当的位置，例如Custom Key Data部分的后面 -->
+        <h2>Credit Summary</h2>
+        <div class="key-value">
+            <span class="key">Your Key</span>
+            <span class="value" id="apiKey">{{ api_key }}</span>
+            <button class="copy-btn" onclick="copyToClipboard()">
+                <span id="copyText">Copy</span>
+            </button>            
+        </div>               
+        <div class="key-value">
+            <span class="key">Total Granted</span>
+            <span class="value">{{ credit_summary.total_granted }}</span>
+        </div>
+        <div class="key-value">
+            <span class="key">Total Money</span>
+            <span class="value">{{ total_points * price_per_point }}</span> <!-- 使用总点数乘以单价得到总金额 -->
+        </div>
+        <div class="key-value">
+            <span class="key">Expiry Date</span>
+            <span class="value">{{ credit_summary.expire_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+        </div>
+    
+        <!-- 用户输入单价的部分 -->
+        <h2>Settings</h2>
+        <label for="price-per-point">Price per Point:</label>
+        <input type="text" id="price-per-point" value=0.003> <!-- 默认单价为1 -->
+        <!-- 辅助文本说明一下这个单价用户可以更改进行预览，但不影响购买时的定价 -->
+        <p>Price per point is for preview only. It will not affect the price when purchasing.</p>
+        <div class="button-container">
+            <div style="margin: 20px 0;">
+                <button data-href="{{ recharge_link }}" class="btn-gold" onclick="openNewTab(this)">自助充值</button>
+            </div>
+            <div style="margin: 20px 0;">
+                <button onclick="updatePrice()">Update Price</button>
+            </div>
+        </div>
+        <script>
+            function openNewTab(btn) {
+                var href = btn.getAttribute('data-href');
+                if (href) {
+                    window.open(href, '_blank');
+                }
+            }
+            function updatePrice() {
+                var price = parseFloat(document.getElementById('price-per-point').value);
+                $.post("/update_price", { new_price: price }, function(data) {
+                    // 使用新的单价更新金额变动列
+                    var rows = document.querySelectorAll("table tbody tr");
+                    rows.forEach(function(row) {
+                        var changeValueCell = row.querySelector("td:nth-child(5)");
+                        var changeValue = parseFloat(changeValueCell.textContent);
+                        var moneyChangeCell = row.querySelector("td:nth-child(6)");
+                        moneyChangeCell.textContent = (changeValue * price).toFixed(2);
+                    });
+                });
+            }
+            $(document).ready( function () {
+                $('#data-table').DataTable({
+                    "pageLength": 10,  // 每页显示10条记录
+                    "language": {
+                        "lengthMenu": "Show: _MENU_",
+                        "zeroRecords": "未找到记录",
+                        "info": "_START_ 到 _END_ ，共 _TOTAL_",
+                        "infoEmpty": "没有数据",
+                        "infoFiltered": "(从 _MAX_ 条记录中筛选)"
+                    }
+                });
+            } );
+            function copyToClipboard() {
+                const el = document.createElement('textarea');  
+                el.value = document.getElementById('apiKey').textContent;  
+                document.body.appendChild(el);  
+                el.select();  
+                document.execCommand('copy');  
+                document.body.removeChild(el);  
+                
+                // Update button content to show a checkmark
+                const copyText = document.getElementById('copyText');
+                copyText.textContent = '\u2714';  // Unicode for checkmark
+                
+                // Set a delay to revert back to "Copy" after 2 seconds
+                setTimeout(() => {
+                    copyText.textContent = 'Copy';
+                }, 2000);
+            }
+        </script>
+    
+        <h2>Points Usage History</h2>
+        <table id="data-table">
+            <thead>
+                <tr>
+                    <th>Change Time</th>
+                    <th>Points Before Change</th>
+                    <th>Points After Change</th>
+                    <th>Change</th>
+                    <th>Actual Change</th>
+                    <th>Money Change</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for usage in point_usage_arrays %}
+                <tr>
+                    <td>{{ usage.changed_at }}</td>
+                    <td>{{ usage.before_point }}</td>
+                    <td>{{ usage.after_point }}</td>
+                    <td>
+                        {% if usage.after_point > usage.before_point %}
+                            <span class="increase">&#x2191;</span>
+                        {% elif usage.after_point < usage.before_point %}
+                            <span class="decrease">&#x2193;</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% set change_value = usage.after_point - usage.before_point %}
+                        {% if change_value > 0 %}
+                            <span class="increase">+{{ change_value }}</span>
+                        {% else %}
+                            <span class="decrease">{{ change_value }}</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <!-- 假设你已经从后端传递了单价到前端 -->
+                        {{ change_value * price_per_point }} <!-- 这里使用单价乘以点数变动得到金额变动 -->
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+         <!-- 为了布局美观，表格和图之间有分割 -->
+        <hr>
+        <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+            <canvas id="pointsChart"></canvas>
+        </div>        
+    </div> <!-- 结束 .container div -->
+    <script>
+        var ctx = document.getElementById('pointsChart').getContext('2d');
 
-    <h2>Score Usage History</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Change Time</th>
-                <th>Score Before Change</th>
-                <th>Score After Change</th>
-                <th>Change</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for usage in point_usage_arrays %}
-            <tr>
-                <td>{{ usage.changed_at }}</td>
-                <td>{{ usage.before_point }}</td>
-                <td>{{ usage.after_point }}</td>
-                <td>
-                    {% if usage.after_point > usage.before_point %}
-                        <span class="increase">&#x2191;</span> <!-- Up arrow for increase -->
-                    {% elif usage.after_point < usage.before_point %}
-                        <span class="decrease">&#x2193;</span> <!-- Down arrow for decrease -->
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+        // 使用模板变量获取数据 - 假设从后端传递了两个列表：dates（日期）和points（点数）
+        var dates = {{ dates|tojson }};
+        var points = {{ points|tojson }};
+        var money = points.map(point => point * {{ price_per_point }});
+        
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: dates,
+                datasets: [{
+                    label: 'Points',
+                    data: points,
+                    borderColor: '#22a7f2',
+                    yAxisID: 'y-axis-1',
+                    fill: false
+                },
+                {
+                    label: 'Money',
+                    data: money,
+                    borderColor: '#fcc526',
+                    yAxisID: 'y-axis-2',
+                    fill: false
+                }]
+            },
+            options: {
+                scales: {
+                    'y-axis-1': {
+                        type: 'linear',
+                        position: 'left',
+                    },
+                    'y-axis-2': {
+                        type: 'linear',
+                        position: 'right',
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

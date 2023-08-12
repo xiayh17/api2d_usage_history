@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
     <style>
+        .container {
+            max-width: 1200px; /* 或您喜欢的任何其他宽度 */
+            margin: 0 auto;   /* 将内容居中 */
+            padding: 0 20px;  /* 添加一些内边距，以确保内容不会紧挨屏幕边缘 */
+        }
         body {
             font-family: 'Helvetica Neue', Arial, sans-serif;
             padding: 20px;
@@ -42,7 +48,7 @@
     </style>
 </head>
 <body>
-
+<div class="container">
 <h2>API Key Form</h2>
 
 <form action="/get_balance_and_history" method="post">
@@ -50,6 +56,6 @@
   <input type="text" id="apikey" name="apikey" value=""><br>
   <input type="submit" value="Submit">
 </form> 
-
+</div> <!-- 结束 .container div -->
 </body>
 </html>
