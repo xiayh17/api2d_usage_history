@@ -13,7 +13,7 @@ def form():
 @app.route('/get_balance_and_history', methods=['POST'])
 def get_balance_and_history():
     api_key = request.form['apikey']
-    url = f"https://oa.api2d.net/custom_key/get?key={api_key}"
+    url = f"https://api.api2win.com/custom_key/get?key={api_key}"
     headers = {
         'Authorization': f"Bearer {Token}"
     }
