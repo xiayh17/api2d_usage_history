@@ -43,6 +43,10 @@
         <form action="/get_balance_and_history" method="post">
             <label for="apikey">API Key</label>
             <input type="text" id="apikey" name="apikey" value="">
+                <!-- 如果存在错误消息，显示它 -->
+                {% if error %}
+                    <p style="color: red;">{{ error }}</p>
+                {% endif %}
             <input class="button-primary" type="submit" value="Submit">
         </form>
         <hr>

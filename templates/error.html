@@ -17,10 +17,18 @@
         p {
             font-size: 20px;
         }
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <h1>Oops!</h1>
     <p>Something went wrong. Don't worry, it's not your fault. Try refreshing the page or come back later.</p>
+    <p><a href="{{ url_for('form') }}">Back to Home page</a></p>
 </body>
 </html>

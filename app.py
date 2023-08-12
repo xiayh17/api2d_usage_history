@@ -4,14 +4,14 @@ import os
 import re
 from datetime import datetime
 Token = os.getenv('Token')
-
 app = Flask(__name__)
 
 DEFAULT_PRICE_PER_POINT = 0.003  # 默认的点数单价
 
 @app.route('/')
 def form():
-    return render_template('form.html')
+    error_message = request.args.get('error', None)
+    return render_template('form.html', error=error_message)
 
 def get_recharge_link(api_key):
     # 使用正则表达式从api_key中匹配ck后面的数字
@@ -56,17 +56,32 @@ def get_credit_summary(api_key):
             }
     return None
 
-@app.route('/get_balance_and_history', methods=['POST'])
+@app.route('/get_balance_and_history', methods=['GET','POST'])
 def get_balance_and_history():
-    api_key = request.form['apikey']
+    
+    if request.method == 'GET':
+        return redirect(url_for('form'))
+
+    api_key = request.form.get('apikey')
+    if not api_key:
+        return redirect(url_for('form'))
+    
     url = f"https://api.api2win.com/custom_key/get?key={api_key}"
+
     headers = {
         'Authorization': f"Bearer {Token}"
     }
     req_body = {}
 
     response = requests.post(url, headers=headers, json=req_body)
+        
+    if response.status_code != 200:
+        return redirect(url_for('form', error="Invalid API key. Please enter a valid one."))
     
+    body = response.json()
+    if body.get('code') != 0:
+        return redirect(url_for('form', error="Invalid API key. Please enter a valid one."))
+
     if response.status_code != 200:
         return 'Request failed', 400
 
@@ -105,8 +120,12 @@ def refresh_data():
     return redirect(url_for('form'))
 
 @app.errorhandler(500)
-def internal_server_error(e):
+def handle_all_errors(e):
     return render_template('error.html'), 500
+
+@app.errorhandler(400)
+def bad_request_error(e):
+    return render_template('error.html'), 400
 
 if __name__ == "__main__":
     app.run(debug=True)
