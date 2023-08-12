@@ -18,7 +18,7 @@ def get_recharge_link(api_key):
     match = re.search(r'ck(\d+)', api_key)
     if match:
         merchant_id = match.group(1)
-        return f"https://apiyin.com/merchant/{merchant_id}"
+        return f"https://www.apiyin.com/merchant/{merchant_id}"
     return "#"
 
 def filter_custom_key_data(custom_key_data):
