@@ -1,61 +1,58 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <style>
-        .container {
-            max-width: 1200px; /* 或您喜欢的任何其他宽度 */
-            margin: 0 auto;   /* 将内容居中 */
-            padding: 0 20px;  /* 添加一些内边距，以确保内容不会紧挨屏幕边缘 */
-        }
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            padding: 20px;
             background: #F9F9F9;
         }
-        h2 {
-            color: #333;
+
+        .container {
+            max-width: 1200px;
+            margin: 3em auto;
+            padding: 0 2em;
         }
-        form {
-            background: #fff;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0px 10px 20px rgba(0,0,0,0.1);
+
+        .buy-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2em;
         }
-        label, input[type="text"] {
-            display: block;
-            margin-bottom: 10px;
+
+        .buy-section p, 
+        .buy-section a {
+            display: flex;
+            align-items: center;
+            margin: 0 1em; /* 给两个元素加间距 */
         }
-        input[type="text"] {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            width: 100%;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-        input[type="submit"] {
-            background: #007AFF;
-            color: #fff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        input[type="submit"]:hover {
-            background: #0051cb;
+
+        .buy-section .icon {
+            margin-right: 0.5em;
         }
     </style>
 </head>
-<body>
-<div class="container">
-<h2>API Key Form</h2>
 
-<form action="/get_balance_and_history" method="post">
-  <label for="apikey">API Key:</label><br>
-  <input type="text" id="apikey" name="apikey" value=""><br>
-  <input type="submit" value="Submit">
-</form> 
-</div> <!-- 结束 .container div -->
+<body>
+    <div class="container">
+        <h2>API Key Dashboard</h2>
+
+        <form action="/get_balance_and_history" method="post">
+            <label for="apikey">API Key</label>
+            <input type="text" id="apikey" name="apikey" value="">
+            <input class="button-primary" type="submit" value="Submit">
+        </form>
+        <hr>
+        <div class="buy-section">
+            <p><span class="icon"><i class="fas fa-question-circle"></i></span>If you don't have an API key</p>
+            <a href="https://www.apiyin.com/merchant/747" class="buy-link">
+                <span class="icon"><i class="fas fa-shopping-cart"></i></span>Purchase one here
+            </a>
+        </div>
+    </div>
 </body>
+
 </html>

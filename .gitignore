@@ -2,3 +2,4 @@
 .DS_Store
 .env
 templates/expire_at.py
+.envs
